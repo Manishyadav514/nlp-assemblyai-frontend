@@ -43,15 +43,89 @@ Example Response
 
 ## **Deployment**
 
-I have deployed this app on github pages. One thing to be noticed that I have converted this into 
+I have deployed Next.js app on GitHub Pages which involves a few steps, as GitHub Pages is primarily for static sites, whereas Next.js apps often require a server. However, you can deploy a static export of your Next.js app to GitHub Pages. Here’s how you can do it:
 
+### Step 1: Configure Next.js for Static Export
 
+1. Open your `next.config.js` file (create one if it doesn't exist) and add the following configuration to export your Next.js app as static HTML:
+
+   ```javascript
+   /** @type {import('next').NextConfig} */
+   const nextConfig = {
+     output: 'export',
+     images: {
+       unoptimized: true, // Disable Image Optimization if needed
+     },
+     trailingSlash: true, // Adds trailing slash to all routes
+     basePath: '/your-repo-name', // Replace with your GitHub repository name
+   }
+
+   module.exports = nextConfig;
+   ```
+
+   - `output: 'export'` tells Next.js to generate a static site.
+   - `images: { unoptimized: true }` is necessary if you're using Next.js image optimization features that are not compatible with static hosting.
+   - `basePath` is important if your GitHub Pages site will not be served from the root of a domain (e.g., `username.github.io/your-repo-name`).
+
+### Step 2: Build and Export the Static Site
+
+1. Update your `package.json` scripts to include a build command for static export:
+
+   ```json
+   {
+     "scripts": {
+       "build": "next build",
+       "export": "next export",
+       "deploy": "npm run build && npm run export && gh-pages -d out"
+     }
+   }
+   ```
+
+   - The `export` command will generate the static files in an `out` directory.
+   - The `deploy` script will build, export, and deploy your site to GitHub Pages.
+
+### Step 3: Install `gh-pages` Package
+
+1. Install the `gh-pages` package to handle deployment to GitHub Pages:
+
+   ```bash
+   npm install gh-pages --save-dev
+   ```
+2. Add a `homepage` field in your `package.json` to point to your GitHub Pages URL:
+
+   ```json
+   {
+     "homepage": "https://username.github.io/your-repo-name"
+   }
+   ```
+
+### Step 4: Deploy to GitHub Pages
+
+1. Run the following command to build, export, and deploy your Next.js app to GitHub Pages:
+
+   ```bash
+   npm run deploy
+   ```
+
+   This command will create a new branch named `gh-pages` in your GitHub repository and push the contents of the `out` directory there. GitHub Pages will automatically serve the files from this branch.
+
+### Step 5: Configure GitHub Repository
+
+1. Go to your GitHub repository.
+2. Navigate to **Settings** > **Pages**.
+3. Under **Source**, select the `gh-pages` branch.
+
+Your Next.js app should now be deployed and accessible via `https://username.github.io/your-repo-name`.
+
+### Important Considerations
+
+- **Dynamic Routes**: Since GitHub Pages is a static hosting solution, dynamic routes that rely on server-side functionality won't work. Ensure your app can be fully pre-rendered or use client-side rendering for dynamic content.
+- **Custom Domain**: If you’re using a custom domain, ensure your DNS is configured correctly and update the `homepage` field in `package.json` accordingly.
 
 
 ## **Converting this Website to PWA**
 
 Progressive Web Application’s notable advantages, such as higher discoverability, reduction of memory usage, cost-effective development, and notably fast offline performance.
-
 
 any given web application can be converted into a PWA with relative ease. This is true regardless of the type or complexity of your app. Turning a website into a Progressive Web App (PWA) involves adding a few features and modifying some code to make the website behave like an app on mobile devices. Here are the general steps to turn website into PWA.
 
@@ -75,7 +149,7 @@ It describes your PWA, including its name, icons, and other details. To create t
 
 ```
 
-Your manifest.json should be like this; 
+Your manifest.json should be like this;
 
 ```
 {
@@ -104,7 +178,6 @@ Your manifest.json should be like this;
 ```
 
 ### **3. Add a Service Worker**
-
 
 A service worker is a JavaScript file that runs in the background and intercepts network requests, and it is the core element of modern PWA technology. The Service Worker will be responsible for all file caching, server pushing notifications, content updates, data manipulation, etc., by listening to network requests on the server and placing as .js files on user devices. The Service Worker will then monitor these events and return the appropriate response.
 
