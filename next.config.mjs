@@ -1,8 +1,10 @@
-/** @type {import('next').NextConfig} */
-const withPWA = require("next-pwa");
+// Import using ES module syntax
+import withPWA from "next-pwa";
 
+// Your Next.js configuration
 const nextConfig = {};
 
+// PWA configuration
 const pwaConfig = {
   dest: "public",
   disable: process.env.NODE_ENV === "development",
@@ -54,7 +56,8 @@ const pwaConfig = {
   ],
 };
 
-module.exports = withPWA({
+// Export the final configuration
+export default withPWA({
   ...nextConfig,
   ...pwaConfig,
 });
