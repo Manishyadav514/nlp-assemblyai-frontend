@@ -327,6 +327,28 @@ You can add a service worker to your website by writing the code yourself or usi
 Update or create your `next.config.js` with
 
 ```
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  swcMinify: true,
+  compiler: {
+    removeConsole: process.env.NODE_ENV !== "development",
+  },
+};
+
+const withPWA = require("next-pwa")({
+  dest: "public",
+  disable: process.env.NODE_ENV === "development",
+  register: true,
+});
+
+module.exports = withPWA(nextConfig);
+```
+
+
+
+
+```
 
 const nextConfig = {};
 

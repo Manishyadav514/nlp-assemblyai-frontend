@@ -60,12 +60,29 @@
 
 // const nextConfig = {};
 
+// const withPWA = require("next-pwa")({
+//   dest: "public", // Specify the output directory for the service worker
+//   disable: process.env.NODE_ENV === "development", // Disable PWA in development mode
+// });
+
+// module.exports = withPWA({
+//   reactStrictMode: true,
+//   // ...nextConfig,
+// });
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  swcMinify: true,
+  compiler: {
+    removeConsole: process.env.NODE_ENV !== "development",
+  },
+};
+
 const withPWA = require("next-pwa")({
-  dest: "public", // Specify the output directory for the service worker
-  disable: process.env.NODE_ENV === "development", // Disable PWA in development mode
+  dest: "public",
+  disable: process.env.NODE_ENV === "development",
+  register: true,
 });
 
-module.exports = withPWA({
-  reactStrictMode: true,
-  // ...nextConfig,
-});
+module.exports = withPWA(nextConfig);
