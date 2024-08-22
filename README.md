@@ -122,41 +122,37 @@ Your Next.js app should now be deployed and accessible via `https://username.git
 - **Dynamic Routes**: Since GitHub Pages is a static hosting solution, dynamic routes that rely on server-side functionality won't work. Ensure your app can be fully pre-rendered or use client-side rendering for dynamic content.
 - **Custom Domain**: If you’re using a custom domain, ensure your DNS is configured correctly and update the `homepage` field in `package.json` accordingly.
 
-
 ## **Converting this Website to PWA**
 
-Progressive Web Application’s notable advantages, such as higher discoverability, reduction of memory usage, cost-effective development, and notably fast offline performance.
+Using `next-pwa`, you can leverage the significant advantages of Progressive Web Applications (PWAs), such as improved discoverability, reduced memory usage, cost-effective development, and notably fast offline performance. Any web application, regardless of its type or complexity, can be converted into a PWA with relative ease. Transforming a website into a Progressive Web App involves adding a few features and modifying some code to enable the website to function like a native app on mobile devices. Here are the general steps to achieve this.
 
-any given web application can be converted into a PWA with relative ease. This is true regardless of the type or complexity of your app. Turning a website into a Progressive Web App (PWA) involves adding a few features and modifying some code to make the website behave like an app on mobile devices. Here are the general steps to turn website into PWA.
-
-### **1. Build a Basic Website**
+### **Step 1: Build a Basic Website**
 
 * Secure connection to PWA through HTTPS will help users feel more protected.
 * website must be responsive
 
-### **2. Create a Web App Manifest File**
+### Step 2: Install
+
+We have  App Router architecture of Next.js so will folllow that specific methods. Will be using next-pwa package to make PWA.
+
+```
+yarn add next-pwa && yarn add -D webpack
+```
+
+### **Step 3: Create a Web App Manifest File**
 
 It describes your PWA, including its name, icons, and other details. To create the web app manifest, you can use a tool like PWA Builder or create it manually. Once you have the manifest file, add it to your website’s root directory. If you don’t have a structured system for your templates, add these lines to get started:
 
-```
-<head>
+Update `app/manifest.json` (App Router) or `public/manifest.json` (Pages Router) with the following content:
 
-<meta name= “viewport” content=”width=device-width, user-scalable=no” />
-
-<link rel= “manifest” href= “manifest.json” />
-
-</head>
-
-```
-
-Your manifest.json should be like this;
+app/manifest.json
 
 ```
 {
-  "name": "Sample PWA",
+  "name": "nlp_pwa",
   "short_name": "nlp_pwa",
-  "start_url": "index.html?utm_source=homescreen",
-  "scope": "./",
+  "description": "Your App Description",
+  "start_url": "/",
   "icons": [
     {
       "src": "./196.png",
@@ -173,14 +169,222 @@ Your manifest.json should be like this;
   "background_color": "#ffee00",
   "display": "standalone"
 }
-
-
 ```
 
-### **3. Add a Service Worker**
+### **Step 4: Add metadata to `<head />`**
+
+Add the following to your:
+
+**app/layout.tsx**
+
+```
+import type { Metadata, Viewport } from "next";
+
+const APP_NAME = "PWA App";
+const APP_DEFAULT_TITLE = "My Awesome PWA App";
+const APP_TITLE_TEMPLATE = "%s - PWA App";
+const APP_DESCRIPTION = "Best PWA app in the world!";
+
+export const metadata: Metadata = {
+  applicationName: APP_NAME,
+  title: {
+    default: APP_DEFAULT_TITLE,
+    template: APP_TITLE_TEMPLATE,
+  },
+  description: APP_DESCRIPTION,
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: APP_DEFAULT_TITLE,
+    // startUpImage: [],
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  openGraph: {
+    type: "website",
+    siteName: APP_NAME,
+    title: {
+      default: APP_DEFAULT_TITLE,
+      template: APP_TITLE_TEMPLATE,
+    },
+    description: APP_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary",
+    title: {
+      default: APP_DEFAULT_TITLE,
+      template: APP_TITLE_TEMPLATE,
+    },
+    description: APP_DESCRIPTION,
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#FFFFFF",
+};
+```
+
+**pages/_app.tsx**
+
+```
+import type { AppProps } from "next/app";
+import Head from "next/head";
+
+export default function App({ Component, pageProps }: AppProps) {
+  return (
+    <>
+      <Head>
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>My awesome PWA app</title>
+        <meta name="description" content="Best PWA app in the world!" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="mask-icon" href="/icons/mask-icon.svg" color="#FFFFFF" />
+        <meta name="theme-color" content="#ffffff" />
+        <link rel="apple-touch-icon" href="/icons/touch-icon-iphone.png" />
+        <link
+          rel="apple-touch-icon"
+          sizes="152x152"
+          href="/icons/touch-icon-ipad.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/icons/touch-icon-iphone-retina.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="167x167"
+          href="/icons/touch-icon-ipad-retina.png"
+        />
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:url" content="https://yourdomain.com" />
+        <meta name="twitter:title" content="My awesome PWA app" />
+        <meta name="twitter:description" content="Best PWA app in the world!" />
+        <meta name="twitter:image" content="/icons/twitter.png" />
+        <meta name="twitter:creator" content="@DavidWShadow" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="My awesome PWA app" />
+        <meta property="og:description" content="Best PWA app in the world!" />
+        <meta property="og:site_name" content="My awesome PWA app" />
+        <meta property="og:url" content="https://yourdomain.com" />
+        <meta property="og:image" content="/icons/og.png" />
+        {/* add the following only if you want to add a startup image for Apple devices. */}
+        <link
+          rel="apple-touch-startup-image"
+          href="/images/apple_splash_2048.png"
+          sizes="2048x2732"
+        />
+        <link
+          rel="apple-touch-startup-image"
+          href="/images/apple_splash_1668.png"
+          sizes="1668x2224"
+        />
+        <link
+          rel="apple-touch-startup-image"
+          href="/images/apple_splash_1536.png"
+          sizes="1536x2048"
+        />
+        <link
+          rel="apple-touch-startup-image"
+          href="/images/apple_splash_1125.png"
+          sizes="1125x2436"
+        />
+        <link
+          rel="apple-touch-startup-image"
+          href="/images/apple_splash_1242.png"
+          sizes="1242x2208"
+        />
+        <link
+          rel="apple-touch-startup-image"
+          href="/images/apple_splash_750.png"
+          sizes="750x1334"
+        />
+        <link
+          rel="apple-touch-startup-image"
+          href="/images/apple_splash_640.png"
+          sizes="640x1136"
+        />
+      </Head>
+      <Component {...pageProps} />
+    </>
+  );
+}
+```
+
+### **Step 5: Add a Service Worker**
 
 A service worker is a JavaScript file that runs in the background and intercepts network requests, and it is the core element of modern PWA technology. The Service Worker will be responsible for all file caching, server pushing notifications, content updates, data manipulation, etc., by listening to network requests on the server and placing as .js files on user devices. The Service Worker will then monitor these events and return the appropriate response.
 
 In addition, the displayed content is customized based on the cached cache even when the user is offline. Besides, you can also use cache data as variables and parameters. This means that although the first load takes a few seconds, subsequent times by leveraging service workers should be faster. Therefore, this allows a PWA to work offline and load quickly.
 
 You can add a service worker to your website by writing the code yourself or using a tool like Workbox. You can copy the code below. To use this code, create a new file and name it *sw.js* before saving your changes.
+
+### **Step 6. Wrap your Next config with `withPWA`***
+
+Update or create your `next.config.js` with
+
+```
+
+const nextConfig = {};
+
+const withPWA = require("@ducanh2912/next-pwa").default({
+  dest: "public",
+  disable: process.env.NODE_ENV === "development",
+  runtimeCaching: [
+    {
+      urlPattern: /^https:\/\/fonts\.(googleapis|gstatic)\.com\/.*/i,
+      handler: "CacheFirst",
+      options: {
+        cacheName: "google-fonts",
+        expiration: {
+          maxEntries: 4,
+          maxAgeSeconds: 365 * 24 * 60 * 60, // 1 year
+        },
+      },
+    },
+    {
+      urlPattern: /^https:\/\/cdnjs\.cloudflare\.com\/.*/i,
+      handler: "CacheFirst",
+      options: {
+        cacheName: "static-resources",
+        expiration: {
+          maxEntries: 20,
+          maxAgeSeconds: 365 * 24 * 60 * 60, // 1 year
+        },
+      },
+    },
+    {
+      urlPattern: /\.(?:png|jpg|jpeg|svg|gif|ico)$/i,
+      handler: "CacheFirst",
+      options: {
+        cacheName: "images",
+        expiration: {
+          maxEntries: 60,
+          maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+        },
+      },
+    },
+    {
+      urlPattern: /^\/(?!api\/).*/i,
+      handler: "NetworkFirst",
+      options: {
+        cacheName: "pages",
+        expiration: {
+          maxEntries: 50,
+          maxAgeSeconds: 24 * 60 * 60, // 1 day
+        },
+      },
+    },
+  ],
+});
+
+module.exports = withPWA({
+  ...nextConfig,
+});
+
+```
+
+After running next build, this will generate two files in your public: workbox-*.js and sw.js, which will automatically be served statically.
