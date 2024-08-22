@@ -2,7 +2,6 @@
 // import withPWA from "next-pwa";
 
 // Your Next.js configuration
-const nextConfig = {};
 
 // const withPWA = require("next-pwa").default({
 //   dest: "public",
@@ -59,10 +58,14 @@ const nextConfig = {};
 //   ...nextConfig,
 // });
 
+// const nextConfig = {};
+
 const withPWA = require("next-pwa")({
-  dest: "public",
+  dest: "public", // Specify the output directory for the service worker
+  disable: process.env.NODE_ENV === "development", // Disable PWA in development mode
 });
 
 module.exports = withPWA({
-  nextConfig,
+  reactStrictMode: true,
+  // ...nextConfig,
 });
