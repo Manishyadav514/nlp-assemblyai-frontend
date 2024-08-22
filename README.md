@@ -52,13 +52,13 @@ I have deployed Next.js app on GitHub Pages which involves a few steps, as GitHu
    ```javascript
    /** @type {import('next').NextConfig} */
    const nextConfig = {
-     output: 'export',
+     output: "export",
      images: {
        unoptimized: true, // Disable Image Optimization if needed
      },
      trailingSlash: true, // Adds trailing slash to all routes
-     basePath: '/your-repo-name', // Replace with your GitHub repository name
-   }
+     basePath: "/your-repo-name", // Replace with your GitHub repository name
+   };
 
    module.exports = nextConfig;
    ```
@@ -91,6 +91,7 @@ I have deployed Next.js app on GitHub Pages which involves a few steps, as GitHu
    ```bash
    npm install gh-pages --save-dev
    ```
+
 2. Add a `homepage` field in your `package.json` to point to your GitHub Pages URL:
 
    ```json
@@ -128,12 +129,12 @@ Using `next-pwa`, you can leverage the significant advantages of Progressive Web
 
 ### **Step 1: Build a Basic Website**
 
-* Secure connection to PWA through HTTPS will help users feel more protected.
-* website must be responsive
+- Secure connection to PWA through HTTPS will help users feel more protected.
+- website must be responsive
 
 ### Step 2: Install
 
-We have  App Router architecture of Next.js so will folllow that specific methods. Will be using next-pwa package to make PWA.
+We have App Router architecture of Next.js so will folllow that specific methods. Will be using next-pwa package to make PWA.
 
 ```
 yarn add next-pwa && yarn add -D webpack
@@ -226,7 +227,7 @@ export const viewport: Viewport = {
 };
 ```
 
-**pages/_app.tsx**
+**pages/\_app.tsx**
 
 ```
 import type { AppProps } from "next/app";
@@ -320,9 +321,10 @@ A service worker is a JavaScript file that runs in the background and intercepts
 
 In addition, the displayed content is customized based on the cached cache even when the user is offline. Besides, you can also use cache data as variables and parameters. This means that although the first load takes a few seconds, subsequent times by leveraging service workers should be faster. Therefore, this allows a PWA to work offline and load quickly.
 
-You can add a service worker to your website by writing the code yourself or using a tool like Workbox. You can copy the code below. To use this code, create a new file and name it *sw.js* before saving your changes.
+You can add a service worker to your website by writing the code yourself or using a tool like Workbox. You can copy the code below. To use this code, create a new file and name it _sw.js_ before saving your changes.
+next-pwa handles the service worker setup, so you don't need to manually create one. Just ensure that the service worker is correctly registered in your app.
 
-### **Step 6. Wrap your Next config with `withPWA`***
+### **Step 6. Wrap your Next config with `withPWA`\***
 
 Update or create your `next.config.js` with
 
@@ -344,9 +346,6 @@ const withPWA = require("next-pwa")({
 
 module.exports = withPWA(nextConfig);
 ```
-
-
-
 
 ```
 
@@ -409,4 +408,13 @@ module.exports = withPWA({
 
 ```
 
-After running next build, this will generate two files in your public: workbox-*.js and sw.js, which will automatically be served statically.
+After running next build, this will generate two files in your public: workbox-\*.js and sw.js, which will automatically be served statically.
+
+## Issues and Challanges
+
+### Deploying `Next.js` app as static site on `Github Pages` and creating PWA
+
+1. `next-pwa` typically requires setting the `output: 'export'` in the `next.config.js` when deploying to static sites like GitHub Pages.
+2. GitHub Actions YAML file is used for deploying a Next.js site to GitHub Pages. To run static code locally `npx serve@latest out`
+3. remove export script from package.json as `next export` has been removed in favor of 'output: export' in next.config.js.
+

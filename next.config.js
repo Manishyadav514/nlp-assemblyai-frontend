@@ -74,15 +74,15 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  output: "export", // Required for static export
   compiler: {
-    removeConsole: process.env.NODE_ENV !== "development",
+    removeConsole: process.env.NODE_ENV !== "development", // Remove console logs in production
   },
 };
-
 const withPWA = require("next-pwa")({
-  dest: "public",
-  disable: process.env.NODE_ENV === "development",
-  register: true,
+  dest: "public", // Directory for the PWA assets
+  disable: process.env.NODE_ENV === "development", // Disable PWA in development mode
+  register: true, // Automatically registers the service worker
+  skipWaiting: true, // Immediate control over the pages
 });
-
 module.exports = withPWA(nextConfig);
