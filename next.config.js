@@ -1,15 +1,17 @@
-const withPWA = require("next-pwa")({
-  dest: "public", // PWA assets directory
-  disable: process.env.NODE_ENV === "development",
-  register: true, // next-pwa registers the service worker
+const isExport = process.env.NEXT_PHASE === 'phase-export';
+const withPWA = require('next-pwa')({
+  dest: 'public',
+  disable: isExport || process.env.NODE_ENV === 'development',
+  register: true,
   skipWaiting: true,
 });
 
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  output: isExport ? undefined : 'export',
   compiler: {
-    removeConsole: process.env.NODE_ENV !== "development",
+    removeConsole: process.env.NODE_ENV !== 'development',
   },
 };
 
