@@ -1949,6 +1949,11 @@ chrome-trace-event@^1.0.2:
   resolved "https://registry.yarnpkg.com/chrome-trace-event/-/chrome-trace-event-1.0.4.tgz#05bffd7ff928465093314708c93bdfa9bd1f0f5b"
   integrity sha512-rNjApaLzuwaOTjCiT8lSDdGN1APCiqkChLMJxJPWLunPAt5fy8xgU9/jNOchV84wfIxrA0lRQB7oCT8jrn/wrQ==
 
+ci@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/ci/-/ci-2.3.0.tgz#ff4afaee68a3257359f870f94658ebd4a8efa0d6"
+  integrity sha512-0MGXkzJKkwV3enG7RUxjJKdiAkbaZ7visCjitfpCN2BQjv02KGRMxCHLv4RPokkjJ4xR33FLMAXweS+aQ0pFSQ==
+
 clean-webpack-plugin@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/clean-webpack-plugin/-/clean-webpack-plugin-4.0.0.tgz#72947d4403d452f38ed61a9ff0ada8122aacd729"
