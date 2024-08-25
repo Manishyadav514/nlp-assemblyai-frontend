@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "static": "npx serve@latest out",
-    "export": "next export"
+    "static": "npx serve@latest out"
   },
   "dependencies": {
     "@types/next-pwa": "^5.6.9",

@@ -91,7 +91,6 @@ I have deployed Next.js app on GitHub Pages which involves a few steps, as GitHu
    ```bash
    npm install gh-pages --save-dev
    ```
-
 2. Add a `homepage` field in your `package.json` to point to your GitHub Pages URL:
 
    ```json
@@ -315,7 +314,31 @@ export default function App({ Component, pageProps }: AppProps) {
 }
 ```
 
+if using custom service worker, add the below code in the head of `app/layout.tsx `**(App Router) or app.js (Page Router)**
+
+```
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#000000" />
+        <link rel="apple-touch-icon" href="/196.png" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
+
+        {/* <!-- iOS Splash Screens --> */}
+        <link
+          href="/splashscreens/iphone5_splash.png"
+          media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)"
+          rel="apple-touch-startup-image"
+        />
+      </head>
+```
+
 ### **Step 5: Add a Service Worker**
+
+imp: use this if next-pwa package doesn't work (It didn't work for me while deploying as a statis site on Github Pages)
 
 A service worker is a JavaScript file that runs in the background and intercepts network requests, and it is the core element of modern PWA technology. The Service Worker will be responsible for all file caching, server pushing notifications, content updates, data manipulation, etc., by listening to network requests on the server and placing as .js files on user devices. The Service Worker will then monitor these events and return the appropriate response.
 
@@ -323,6 +346,46 @@ In addition, the displayed content is customized based on the cached cache even 
 
 You can add a service worker to your website by writing the code yourself or using a tool like Workbox. You can copy the code below. To use this code, create a new file and name it _sw.js_ before saving your changes.
 next-pwa handles the service worker setup, so you don't need to manually create one. Just ensure that the service worker is correctly registered in your app.
+
+`update public/service-worker.js`
+
+```
+const CACHE_NAME = "my-pwa-cache-v1";
+const urlsToCache = ["/"]; // add other urls that needs to be cached
+
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(urlsToCache);
+    })
+  );
+});
+
+self.addEventListener("fetch", (event) => {
+  event.respondWith(
+    caches.match(event.request).then((response) => {
+      return response || fetch(event.request);
+    })
+  );
+});
+
+self.addEventListener("activate", (event) => {
+  const cacheWhitelist = [CACHE_NAME];
+  event.waitUntil(
+    caches.keys().then((keyList) =>
+      Promise.all(
+        keyList.map((key) => {
+          if (!cacheWhitelist.includes(key)) {
+            return caches.delete(key);
+          }
+        })
+      )
+    )
+  );
+});
+
+```
+
 
 ### **Step 6. Wrap your Next config with `withPWA`\***
 
@@ -408,6 +471,21 @@ module.exports = withPWA({
 
 ```
 
+Go with the below code if using custom service worker instead of next-pwa
+
+```
+const nextConfig = {
+  reactStrictMode: true,
+  swcMinify: true,
+  output: "export", //remove this line if not expoerting as a static site
+  compiler: {
+    removeConsole: process.env.NODE_ENV !== "development",
+  },
+};
+
+module.exports = nextConfig;
+```
+
 After running next build, this will generate two files in your public: workbox-\*.js and sw.js, which will automatically be served statically.
 
 ## Issues and Challanges
@@ -417,4 +495,3 @@ After running next build, this will generate two files in your public: workbox-\
 1. `next-pwa` typically requires setting the `output: 'export'` in the `next.config.js` when deploying to static sites like GitHub Pages.
 2. GitHub Actions YAML file is used for deploying a Next.js site to GitHub Pages. To run static code locally `npx serve@latest out`
 3. remove export script from package.json as `next export` has been removed in favor of 'output: export' in next.config.js.
-

@@ -1,3 +1,4 @@
+// nex-pwa config didn't work, getting typerror
 // const isExport = process.env.NEXT_PHASE === 'phase-export';
 // const withPWA = require('next-pwa')({
 //   dest: 'public',
